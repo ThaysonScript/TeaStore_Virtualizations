@@ -1,1 +1,1 @@
-# TeaStore_Virtualizations
+# teastore-no-containers
