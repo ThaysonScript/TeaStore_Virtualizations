@@ -2,9 +2,15 @@
 Use the TeaStore application without using containers for general testing and experimentation purposes.
 
 ## Instructions for use
-Use the content present in the 
+configuration files are found in
 ```bash
 ./teastore-no-containeres/Tea
+```
+# Using services
+all services can be configured and turned on by running this script
+```bash
+cd ./teastore-no-containeres/
+bash start-all-services.sh
 ```
 
 ## License
