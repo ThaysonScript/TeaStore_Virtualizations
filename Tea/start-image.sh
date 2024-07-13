@@ -37,4 +37,6 @@ export JAVA_HOME=/usr/local/openjdk-11
 [[ -d "/usr/local/tomcat" ]] && mv /usr/local/tomcat /usr/local/"$TOMCAT" || echo "pasta base tomcat não existe, talvês já tenha sido movida!"
 
 java -jar "$CATALINA_HOME"/bin/dockermemoryconfigurator.jar "${TOMCAT_HEAP_MEM_PERCENTAGE}"
-"$CATALINA_HOME"/bin/catalina.sh run
+
+# "$CATALINA_HOME"/bin/catalina.sh run > /root/"$TOMCAT"_bin_catalina.txt
+"$CATALINA_HOME"/bin/catalina.sh run 2>&1 | tee /root/"$TOMCAT"_bin_catalina.txt > /dev/null

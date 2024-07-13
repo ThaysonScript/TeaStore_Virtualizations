@@ -4,6 +4,8 @@
 # MAINTAINER Chair of Software Engineering <se2-it@informatik.uni-wuerzburg.de>
 
 # ------------------------------------------------------------------- SET VARS --------------------------------------------------------------------------
+PWD_PATH="$(pwd)/Tea"
+
 # SERVICE CONFIGS
 use_https="false"
 rabbitmq_host="unset"
@@ -86,7 +88,8 @@ export CONNECTOR_PORT=$connector_port
 # --------------------------------------------------------------------------------------------------------------------------------------------------
 
 # COPY JAVA SERVICE .WAR
-cp teastores_war/*auth.war "$CATALINA_HOME"/webapps/
+mkdir -p "$CATALINA_HOME"/webapps
+cp "$PWD_PATH"/teastores_war/*auth.war "$CATALINA_HOME"/webapps/
 
 # RUN JVM CONFIG MEMORY
 java -jar "$CATALINA_HOME"/bin/dockermemoryconfigurator.jar "${TOMCAT_HEAP_MEM_PERCENTAGE}"

@@ -3,6 +3,8 @@
 # FROM descartesresearch/teastore-base:latest
 
 # ------------------------------------------------------------------- SET VARS --------------------------------------------------------------------------
+PWD_PATH="$(pwd)/Tea"
+
 # SERVICE CONFIGS
 use_https="false"
 rabbitmq_host="unset"
@@ -85,7 +87,8 @@ export CONNECTOR_PORT=$connector_port
 # --------------------------------------------------------------------------------------------------------------------------------------------------
 
 # COPY JAVA SERVICE .WAR
-cp teastores_war/*webui.war "$CATALINA_HOME"/webapps/
+mkdir -p "$CATALINA_HOME"/webapps
+cp "$PWD_PATH"/teastores_war/*webui.war "$CATALINA_HOME"/webapps/
 
 # CONFIG PAGE ROOT
 mkdir -p "$CATALINA_HOME"/webapps/ROOT
