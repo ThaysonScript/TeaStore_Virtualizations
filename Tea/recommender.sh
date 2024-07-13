@@ -5,6 +5,7 @@
 
 # ------------------------------------------------------------------- SET VARS --------------------------------------------------------------------------
 PWD_PATH="$(pwd)/Tea"
+TOMCAT=tomcat-recommender
 
 # SERVICE CONFIGS
 use_https="false"
@@ -97,4 +98,4 @@ java -jar "$CATALINA_HOME"/bin/dockermemoryconfigurator.jar "${TOMCAT_HEAP_MEM_P
 # RUN START TOMCAT SERVICE FOR CONFIG SERVICE
 "$CATALINA_HOME"/bin/start.sh
 
-# "$CATALINA_HOME"/bin/catalina.sh run
+[[ -d "/usr/local/tomcat" ]] && mv /usr/local/tomcat /usr/local/"$TOMCAT" || echo "pasta base tomcat não existe, talvês já tenha sido movida!"

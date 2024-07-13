@@ -23,6 +23,6 @@ for TOMCAT in "${services[@]}"; do
 
     java -jar "$CATALINA_HOME"/bin/dockermemoryconfigurator.jar "${TOMCAT_HEAP_MEM_PERCENTAGE}"
 
-    # "$CATALINA_HOME"/bin/catalina.sh run > /root/"$TOMCAT"_bin_catalina.txt
-    "$CATALINA_HOME"/bin/catalina.sh run &
+    echo -e "\nIniciando servico $TOMCAT apos 10 segundos"; sleep 10s
+    nohup "$CATALINA_HOME"/bin/catalina.sh run &
 done

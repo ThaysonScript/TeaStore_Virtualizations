@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
+rm -r /usr/local/tomcat*
+
 [[ "$(pwd)" != "/root/teastore-no-containers" ]] && {
     echo -e "\nverifique o pwd, execute diretamente no diretorio ./teastore-no-containers: pwd = $(pwd)"; exit 1
 }
 
-PID_SERVICES=()
 PWD_PATH="$(pwd)/Tea"
 
 
@@ -13,6 +14,8 @@ GET_DEPENDENCIES() {
 
     # shellcheck disable=SC1091
     bash "$pwd_tea_base/Tea/tools.descartes.teastore.dockerbase/tea_base.sh"
+
+    cp -r "/usr/local/tomcat" "/root/tomcat-cp"
 }
 
 
@@ -26,59 +29,38 @@ CONFIG_ALL_SERVICES() {
     # -------------------------- REGISTRY SERVICE
     reset; echo -e "\nconfigure and start service: registry\n"
     bash "$PWD_PATH/registry.sh"
-    bash "$PWD_PATH/start-registry.sh"
-    PID_SERVICES+=($!)
-    GET_DEPENDENCIES
+    cp -r "/root/tomcat-cp" "/usr/local/tomcat"
 
     # -------------------------- WEBUI SERVICE
     echo -e "\nconfigure and start service: webui\n"
     bash "$PWD_PATH/webui.sh"
-    bash "$PWD_PATH/start-webui.sh"
-    PID_SERVICES+=($!)
-    GET_DEPENDENCIES
+    cp -r "/root/tomcat-cp" "/usr/local/tomcat"
 
     # -------------------------- PERSISTENCE SERVICE
     echo -e "\nconfigure and start service: persistence\n"
     bash "$PWD_PATH/persistence.sh"
-    bash "$PWD_PATH/start-persistence.sh"
-    PID_SERVICES+=($!)
-    GET_DEPENDENCIES
+    cp -r "/root/tomcat-cp" "/usr/local/tomcat"
 
     # -------------------------- AUTH SERVICE
     echo -e "\nconfigure and start service: auth\n"
     bash "$PWD_PATH/auth.sh"
-    bash "$PWD_PATH/start-auth.sh"
-    PID_SERVICES+=($!)
-    GET_DEPENDENCIES
+    cp -r "/root/tomcat-cp" "/usr/local/tomcat"
 
     # -------------------------- IMAGE SERVICE
     echo -e "\nconfigure and start service: image\n"
     bash "$PWD_PATH/image.sh"
-    bash "$PWD_PATH/start-image.sh"
-    PID_SERVICES+=($!)
-    GET_DEPENDENCIES
+    cp -r "/root/tomcat-cp" "/usr/local/tomcat"
 
     # -------------------------- RECOMMENDER SERVICE
     echo -e "\nconfigure and start service: recommender\n"
     bash "$PWD_PATH/recommender.sh"
-    bash "$PWD_PATH/start-recommender.sh"
-    PID_SERVICES+=($!)
 }
 
 
 MAIN() {
     GET_DEPENDENCIES
     CONFIG_ALL_SERVICES
-
-    echo -e "\nMostrando pids em segundo plano dos serviços executados\n"
-    local i=1
-    export PID_SERVICES && {
-        for pid in "${PID_SERVICES[@]}"; do
-            echo "serviço $i: $pid"
-            ((i+=1))
-        done
-    }
-    echo -e "\nArray pids dos serviços, use kill -9 (pid) em cada pid para matar serviço: $PID_SERVICES\n"
 }
 
 MAIN
+rm -r /root/tomcat-cp
