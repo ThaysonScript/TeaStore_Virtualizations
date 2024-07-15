@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# FROM descartesresearch/teastore-base:latest
 services=( "tomcat-registry" "tomcat-webui" "tomcat-persistence" "tomcat-auth" "tomcat-image" "tomcat-recommender" )
 
 for TOMCAT in "${services[@]}"; do

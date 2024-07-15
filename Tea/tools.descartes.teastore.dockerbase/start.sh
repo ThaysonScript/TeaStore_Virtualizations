@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# ALTERACOES PROPRIAS
-sed -i "/<Server port=\"8005\" shutdown=\"SHUTDOWN\">/c\<Server port=\"$SHUTDOWN_PORT\" shutdown=\"SHUTDOWN\">" /usr/local/tomcat/conf/server.xml
-
-
-
-
 # DANGER! MAKE SURE THIS FILE HAS UNIX-STYLE LINE-ENDINGS OR THE DOCKER CONTAINER WILL NOT START!
 sed -i "s/<Environment name=\"servicePort\" value=.*/<Environment name=\"servicePort\" value=\"${SERVICE_PORT}\"/g" /usr/local/tomcat/conf/context.xml
 if [ "$USE_HTTPS" == "true" ]
@@ -33,9 +27,7 @@ sed -i "s/<Environment name=\"recommenderLoopTime\" value=.*/<Environment name=\
 sed -i "s/<Environment name=\"recommenderAlgorithm\" value=.*/<Environment name=\"recommenderAlgorithm\" value=\"${RECOMMENDER_ALGORITHM}\"/g" /usr/local/tomcat/conf/context.xml
 if [ "$PROXY_NAME" != "unset" ] && [ "$PROXY_PORT" != "unset" ]
 then
-  # VERIFICAR SE A ALTERACAO FUNCIONA
-	# sed -i "s/<Connector port=\"8080\" protocol=\"HTTP\/1.1\".*/<Connector port=\"8080\" protocol=\"HTTP\/1.1\" proxyName=\"${PROXY_NAME}\" proxyPort=\"${PROXY_PORT}\"/g" /usr/local/tomcat/conf/server.xml
-	sed -i "s/<Connector port=\"8080\" protocol=\"HTTP\/1.1\".*/<Connector port=\"$SERVICE_PORT\" protocol=\"HTTP\/1.1\" proxyName=\"${PROXY_NAME}\" proxyPort=\"${PROXY_PORT}\"/g" /usr/local/tomcat/conf/server.xml
+	sed -i "s/<Connector port=\"8080\" protocol=\"HTTP\/1.1\".*/<Connector port=\"8080\" protocol=\"HTTP\/1.1\" proxyName=\"${PROXY_NAME}\" proxyPort=\"${PROXY_PORT}\"/g" /usr/local/tomcat/conf/server.xml
 fi
 sed -i 's/securerandom.source=file:\/dev.*/securerandom.source=file:\/dev\/urandom/g'  ${JAVA_HOME}/conf/security/java.security
 
@@ -50,20 +42,14 @@ then
   sed -i 's/kieker.monitoring.enabled=true/kieker.monitoring.enabled=false/g' /kieker/config/kieker.monitoring.properties
 fi
 
-
-
-# ALTERACOES PROPRIAS
+# SATRT - ALTERACOES PROPRIAS
+sed -i "/<Server port=\"8005\" shutdown=\"SHUTDOWN\">/c\<Server port=\"$SHUTDOWN_PORT\" shutdown=\"SHUTDOWN\">" /usr/local/tomcat/conf/server.xml
 sed -i "/<Connector port=\"8009\" protocol=\"AJP\/1.3\" redirectPort=\"8443\" secretRequired=\"false\" \/>/c\<Connector port=\"$CONNECTOR_PORT\" protocol=\"AJP/1.3\" redirectPort=\"8443\" secretRequired=\"false\" \/>" /usr/local/tomcat/conf/server.xml
-
-
-
-
-
-
+sed -i 's/<Connector port="8080" protocol="HTTP\/1.1"/<Connector port="'"$SERVICE_PORT"'" protocol="HTTP\/1.1"/' /usr/local/tomcat/conf/server.xml
+# END - ALTERACOES PROPRIAS
 
 
 touch /usr/local/tomcat/bin/setenv.sh
 chmod +x /usr/local/tomcat/bin/setenv.sh
 echo 'export JAVA_OPTS="-javaagent:/kieker/agent/agent.jar --add-opens=java.base/java.lang=ALL-UNNAMED -Dkieker.monitoring.configuration=/kieker/config/kieker.monitoring.properties -Daj.weaving.verbose=false -Dorg.aspectj.weaver.loadtime.configuration=aop.xml -Dkieker.monitoring.skipDefaultAOPConfiguration=true -Daj.weaving.loadersToSkip=java.net.URLClassLoader -Dcom.sun.jndi.ldap.object.disableEndpointIdentification=true"' > /usr/local/tomcat/bin/setenv.sh
 echo 'export CLASSPATH=$CLASSPATH:/usr/local/slf4j-simple-1.7.21.jar' >> /usr/local/tomcat/bin/setenv.sh
-
