@@ -108,6 +108,9 @@ else
     set -eux; dpkg -i "$mysql/mysql-apt-config_0.8.32-1_all.deb"; apt update; apt install mysql-server -y
 fi
 
+echo "[mysqld]" >> /etc/mysql/my.cnf
+echo "max_connections = 2048" >> /etc/mysql/my.cnf
+
 # SET setup.sql and setupData.sql for TeaStore database
 mysql -u root -ppassword < "$PWD_PATH/tools.descartes.teastore.database/setup.sql"
 mysql -u teauser -pteapassword teadb < "$PWD_PATH/tools.descartes.teastore.database/setupData.sql"
